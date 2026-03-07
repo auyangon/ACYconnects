@@ -1,4 +1,4 @@
-const API_BASE = 'https://script.google.com/macros/s/AKfycbydGnnALt3qu4MVDqmXzqa49wB7Xl8of-9OqeChOkr6922n6Dj-I6llHJ-aq9aRyWf5lA/exec';
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export interface Student {
   studentId: string;
@@ -88,3 +88,5 @@ class Api {
 }
 
 export const api = new Api();
+
+

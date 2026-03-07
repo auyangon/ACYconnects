@@ -11,3 +11,4 @@ export default defineConfig(async () => {
   } catch {}
   return { plugins };
 })
+
