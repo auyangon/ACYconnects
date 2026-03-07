@@ -1,7 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { api } from '../services/api';
-import type { Student, Enrollment, AttendanceRecord, Announcement, Notification } from '../services/api';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { api, Student, Enrollment, AttendanceRecord, Announcement, Notification } from '../services/api';
 
 interface StudentContextType {
   student: Student | null;
@@ -49,26 +47,19 @@ export const StudentProvider: React.FC<{ children: ReactNode }> = ({ children })
   };
 
   const fetchAllData = async (studentId: string) => {
-    try {
-      const [enr, att, ann, notifs] = await Promise.all([
-        api.getEnrollments(studentId),
-        api.getAttendance(studentId),
-        api.getAnnouncements(),
-        api.getNotifications(studentId),
-      ]);
-      setEnrollments(enr);
-      setAttendance(att);
-      setAnnouncements(ann);
-      const unread = new Set(
-        notifs.filter((n: Notification) => {
-          const readValue = String(n.read).toLowerCase();
-          return readValue !== 'true' && readValue !== '1';
-        }).map(n => n.announcementId)
-      );
-      setUnreadMap(unread);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    const [enr, att, ann, notifs] = await Promise.all([
+      api.getEnrollments(studentId),
+      api.getAttendance(studentId),
+      api.getAnnouncements(),
+      api.getNotifications(studentId),
+    ]);
+    setEnrollments(enr);
+    setAttendance(att);
+    setAnnouncements(ann);
+    const unread = new Set(
+      notifs.filter((n: Notification) => n.read !== 'True' && n.read !== true).map(n => n.announcementId)
+    );
+    setUnreadMap(unread);
   };
 
   const refreshData = async () => {
@@ -126,3 +117,5 @@ export const useStudent = () => {
   if (!ctx) throw new Error('useStudent must be used within StudentProvider');
   return ctx;
 };
+
+
