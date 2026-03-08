@@ -1,68 +1,77 @@
-import { LayoutDashboard, BookOpen, Calendar, BarChart3, Settings, LogOut } from "lucide-react";
-import { useStudent } from "../context/StudentContext";
+import { useStudent } from '../context/StudentContext';
 
-interface Props {
+interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   mobileOpen: boolean;
   setMobileOpen: (v: boolean) => void;
 }
 
-export default function Sidebar({ activeTab, setActiveTab, mobileOpen, setMobileOpen }: Props) {
+export default function Sidebar({ activeTab, setActiveTab, mobileOpen, setMobileOpen }: SidebarProps) {
+  if (mobileOpen) { /* mobile menu is open */ }
   const { student, logout } = useStudent();
   
   if (!student) return null;
 
-  const handleMobileClose = () => {
-    if (mobileOpen && setMobileOpen) {
-      setMobileOpen(false);
-    }
-  };
-
-  const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "courses", label: "Courses", icon: BookOpen },
-    { id: "calendar", label: "Calendar", icon: Calendar },
-    { id: "analytics", label: "Analytics", icon: BarChart3 },
-    { id: "settings", label: "Settings", icon: Settings },
-  ];
+  const tabs = ['dashboard', 'courses', 'calendar', 'analytics', 'settings'];
 
   return (
-    <div className="w-64 bg-green-900 text-white h-screen fixed">
-      <div className="p-4">
-        <h2 className="text-xl font-bold">AUY Portal</h2>
-        <p className="text-sm mt-2">{student.studentName}</p>
-        {mobileOpen && (
-          <button onClick={handleMobileClose} className="lg:hidden mt-2 text-sm">
-            Close Menu
-          </button>
-        )}
+    <div style={{
+      width: '250px',
+      height: '100vh',
+      background: '#1e3c2c',
+      color: 'white',
+      position: 'fixed',
+      left: 0,
+      top: 0
+    }}>
+      <div style={{ padding: '2rem 1rem' }}>
+        <h3>AUY Portal</h3>
+        <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>{student.studentName}</p>
       </div>
-      <nav className="p-4">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                setActiveTab(item.id);
-                handleMobileClose();
-              }}
-              className={`block w-full text-left py-2 px-4 hover:bg-green-800 rounded mb-1 ${
-                activeTab === item.id ? "bg-green-800" : ""
-              }`}
-            >
-              <Icon className="inline mr-2" size={18} /> {item.label}
-            </button>
-          );
-        })}
+      <nav style={{ padding: '1rem' }}>
+        {tabs.map(tab => (
+          <button
+            key={tab}
+            onClick={() => {
+              setActiveTab(tab);
+              setMobileOpen(false);
+            }}
+            style={{
+              display: 'block',
+              width: '100%',
+              textAlign: 'left',
+              padding: '0.75rem 1rem',
+              marginBottom: '0.5rem',
+              borderRadius: '8px',
+              border: 'none',
+              background: activeTab === tab ? '#c5a572' : 'transparent',
+              color: activeTab === tab ? '#1e3c2c' : 'white',
+              cursor: 'pointer'
+            }}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
       </nav>
       <button
         onClick={logout}
-        className="absolute bottom-4 left-4 flex items-center gap-2 hover:text-red-300"
+        style={{
+          position: 'absolute',
+          bottom: '2rem',
+          left: '1rem',
+          padding: '0.5rem 1rem',
+          background: 'transparent',
+          border: '1px solid white',
+          color: 'white',
+          borderRadius: '8px',
+          cursor: 'pointer'
+        }}
       >
-        <LogOut size={18} /> Logout
+        Logout
       </button>
     </div>
   );
 }
+
+

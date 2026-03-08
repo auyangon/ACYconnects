@@ -1,41 +1,36 @@
-import { useState, useEffect } from 'react';
-import { Sun, Moon, Menu, LogOut } from 'lucide-react';
 import { useStudent } from '../context/StudentContext';
 
-interface Props {
+interface HeaderProps {
   darkMode: boolean;
   setDarkMode: (v: boolean) => void;
   setMobileOpen: (v: boolean) => void;
 }
 
-export default function Header({ darkMode, setDarkMode, setMobileOpen }: Props) {
+export default function Header({ darkMode, setDarkMode, setMobileOpen }: HeaderProps) {
   const { student, logout } = useStudent();
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
+  
   if (!student) return null;
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white/80 backdrop-blur-lg border-b">
-      <button onClick={() => setMobileOpen(true)} className="lg:hidden">
-        <Menu />
-      </button>
+    <header style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '1rem 2rem',
+      background: darkMode ? '#1a202c' : '#ffffff',
+      borderBottom: '1px solid #e2e8f0'
+    }}>
+      <button onClick={() => setMobileOpen(true)}>?</button>
       <div>
-        <h1 className="text-xl font-bold">Welcome, {student.studentName}</h1>
-        <p className="text-sm text-gray-600">{time.toLocaleString()}</p>
+        <h2>Welcome, {student.studentName}</h2>
       </div>
-      <div className="flex gap-2">
-        <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg hover:bg-gray-100">
-          {darkMode ? <Sun /> : <Moon />}
+      <div>
+        <button onClick={() => setDarkMode(!darkMode)} style={{ marginRight: '1rem' }}>
+          {darkMode ? '??' : '??'}
         </button>
-        <button onClick={logout} className="p-2 rounded-lg hover:bg-gray-100">
-          <LogOut />
-        </button>
+        <button onClick={logout}>Logout</button>
       </div>
     </header>
   );
 }
+

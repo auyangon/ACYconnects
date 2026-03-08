@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL || 'https://script.google.com/macros/s/AKfycbydGnnALt3qu4MVDqmXzqa49wB7Xl8of-9OqeChOkr6922n6Dj-I6llHJ-aq9aRyWf5lA/exec';
 
 export interface Student {
   studentId: string;
@@ -39,7 +39,6 @@ export interface Announcement {
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   category: string;
   targetCourses: string;
-  emoji?: string;
 }
 
 export interface Notification {
@@ -88,7 +87,3 @@ class Api {
 }
 
 export const api = new Api();
-
-
-
-

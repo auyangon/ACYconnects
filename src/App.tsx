@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { StudentProvider, useStudent } from './context/StudentContext';
 import LoginPage from './components/LoginPage';
 import Sidebar from './components/Sidebar';
@@ -19,16 +18,9 @@ const AppContent = () => {
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     setDarkMode(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setDarkMode(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
   }, []);
 
   if (!student) return <LoginPage />;
-
-  const bg = darkMode
-    ? 'linear-gradient(135deg, #0f1a14 0%, #1a202c 50%, #0f1a14 100%)'
-    : 'linear-gradient(135deg, #f0f4f1 0%, #f5f7fa 50%, #eef2ee 100%)';
 
   const renderContent = () => {
     switch (activeTab) {
@@ -42,30 +34,21 @@ const AppContent = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: bg }}>
-      <Sidebar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        mobileOpen={mobileOpen} 
-        setMobileOpen={setMobileOpen} 
+    <div style={{ minHeight: '100vh', background: darkMode ? '#1a202c' : '#f7fafc' }}>
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        mobileOpen={mobileOpen}
+        setMobileOpen={setMobileOpen}
       />
-      <div className="lg:ml-64">
-        <Header 
-          darkMode={darkMode} 
-          setDarkMode={setDarkMode} 
-          setMobileOpen={setMobileOpen} 
+      <div style={{ marginLeft: '250px' }}>
+        <Header
+          darkMode={darkMode}
+          setDarkMode={setDarkMode}
+          setMobileOpen={setMobileOpen}
         />
         <main>
-          <AnimatePresence mode="wait">
-            <motion.div 
-              key={activeTab} 
-              initial={{ opacity: 0, y: 12 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -12 }}
-            >
-              {renderContent()}
-            </motion.div>
-          </AnimatePresence>
+          {renderContent()}
         </main>
       </div>
     </div>

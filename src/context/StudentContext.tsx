@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { api } from '../services/api';
-import type { Student, Enrollment, AttendanceRecord, Announcement, Notification } from '../services/api';
+import type { Student, Enrollment, AttendanceRecord, Announcement } from '../services/api';
 
 interface StudentContextType {
   student: Student | null;
@@ -13,8 +13,6 @@ interface StudentContextType {
   error: string | null;
   login: (email: string) => Promise<void>;
   logout: () => void;
-  refreshData: () => Promise<void>;
-  markAnnouncementRead: (announcementId: string) => void;
 }
 
 const StudentContext = createContext<StudentContextType | undefined>(undefined);
@@ -24,7 +22,7 @@ export const StudentProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [unreadMap, setUnreadMap] = useState<Set<string>>(new Set());
+  const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,29 +57,10 @@ export const StudentProvider: React.FC<{ children: ReactNode }> = ({ children })
       setEnrollments(enr);
       setAttendance(att);
       setAnnouncements(ann);
-      const unread = new Set(
-        notifs.filter((n: Notification) => {
-          const readValue = String(n.read).toLowerCase();
-          return readValue !== 'true' && readValue !== '1';
-        }).map(n => n.announcementId)
-      );
-      setUnreadMap(unread);
+      setUnreadCount(notifs.filter(n => String(n.read).toLowerCase() !== 'true').length);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
-
-  const refreshData = async () => {
-    if (!student) return;
-    await fetchAllData(student.studentId);
-  };
-
-  const markAnnouncementRead = (announcementId: string) => {
-    setUnreadMap(prev => {
-      const next = new Set(prev);
-      next.delete(announcementId);
-      return next;
-    });
   };
 
   useEffect(() => {
@@ -96,25 +75,17 @@ export const StudentProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }, []);
 
-  useEffect(() => {
-    if (!student) return;
-    const interval = setInterval(refreshData, 30000);
-    return () => clearInterval(interval);
-  }, [student]);
-
   return (
     <StudentContext.Provider value={{
       student,
       enrollments,
       attendance,
       announcements,
-      unreadCount: unreadMap.size,
+      unreadCount,
       loading,
       error,
       login,
       logout,
-      refreshData,
-      markAnnouncementRead,
     }}>
       {children}
     </StudentContext.Provider>
@@ -126,3 +97,4 @@ export const useStudent = () => {
   if (!ctx) throw new Error('useStudent must be used within StudentProvider');
   return ctx;
 };
+

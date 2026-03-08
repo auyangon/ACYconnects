@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useStudent } from '../context/StudentContext';
 
 export default function LoginPage() {
@@ -11,22 +11,51 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1e3c2c] to-[#2d5a3e]">
-      <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-xl p-8 rounded-3xl w-96">
-        <h2 className="text-2xl font-bold text-white mb-6">AUY Student Portal</h2>
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #1e3c2c, #2d5a3e)'
+    }}>
+      <form onSubmit={handleSubmit} style={{
+        background: 'rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(10px)',
+        padding: '2rem',
+        borderRadius: '24px',
+        width: '400px'
+      }}>
+        <h2 style={{ color: 'white', marginBottom: '1.5rem' }}>AUY Student Portal</h2>
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 rounded-xl bg-white/20 text-white mb-4"
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            borderRadius: '12px',
+            border: 'none',
+            marginBottom: '1rem',
+            background: 'rgba(255,255,255,0.2)',
+            color: 'white'
+          }}
           required
         />
-        {error && <p className="text-red-300 text-sm mb-4">{error}</p>}
+        {error && <p style={{ color: '#ff6b6b', marginBottom: '1rem' }}>{error}</p>}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-[#c5a572] text-[#1e3c2c] font-bold rounded-xl"
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            borderRadius: '12px',
+            border: 'none',
+            background: '#c5a572',
+            color: '#1e3c2c',
+            fontWeight: 'bold',
+            cursor: loading ? 'not-allowed' : 'pointer'
+          }}
         >
           {loading ? 'Logging in...' : 'Login'}
         </button>

@@ -1,21 +1,13 @@
-import { useStudent } from '../context/StudentContext';
 
 interface Props {
   darkMode: boolean;
 }
 
-export default function CalendarView({ darkMode }: Props) {
-  const { student } = useStudent();
-  
+export default function PlaceholderView({ darkMode }: Props) {
   return (
-    <div style={{ 
-      background: darkMode ? '#1a202c' : '#ffffff',
-      color: darkMode ? '#ffffff' : '#000000',
-      padding: '20px',
-      borderRadius: '12px'
-    }}>
-      <h2>Component Placeholder</h2>
-      {student && <p>Welcome, {student.studentName}</p>}
+    <div style={{ padding: '2rem', color: darkMode ? 'white' : 'black' }}>
+      <h1>View coming soon...</h1>
     </div>
   );
 }
+
